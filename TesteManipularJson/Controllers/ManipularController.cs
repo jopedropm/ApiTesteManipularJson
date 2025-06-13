@@ -1,31 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
 using TesteManipularJson.JSON;
 using TesteManipularJson.Models;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace TesteManipularJson.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ManipularController : ControllerBase
 {
-    private readonly DesserializeJson _desserializeJson;
+    private readonly List<User> _users;
+    
     public ManipularController(DesserializeJson desserializeJson)
     {
-        _desserializeJson = desserializeJson;
+        _users = desserializeJson.Lista();
     }
+
 
     [HttpGet("/get")]
     public async Task<String> Get()
     {
-        var result = _desserializeJson.Lista();
-        var paises = result.Select(p => p.Country).Distinct();
+        var paises = _users.Select(p => p.Country).Distinct();
         var numPaises = paises.Count();
 
-        string listaString = string.Join("", result.Select(p => $"Nome: {p.Name}, País: {p.Country}, Carro: {p.Car}\n")); 
+        string listaString = string.Join("", _users.Select(p => $"Nome: {p.Name}, País: {p.Country}, Carro: {p.Car}\n")); 
         string final = $"{listaString} {numPaises}";
         return final;
     }
@@ -33,14 +29,13 @@ public class ManipularController : ControllerBase
     [HttpGet("/get/ford")]
     public async Task<string> GetSpecific()
     {
-        var array = _desserializeJson.Lista().ToArray();
         List<User> ford = new List<User>();
         int contador = 0;
-        for (int i = 0; i < array.Length; i++)
+        foreach(var item in _users) 
         {
-            if (array[i].Car == "Ford")
+            if (item.Car == "Ford")
             {
-                ford.Add(array[i]);
+                ford.Add(item);
                 contador++;
             }
         }

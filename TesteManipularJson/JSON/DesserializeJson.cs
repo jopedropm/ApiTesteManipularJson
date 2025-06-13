@@ -9,8 +9,8 @@ public class DesserializeJson
     {
         StreamReader file = System.IO.File.OpenText(@"JSON\RandomData.json");
         JsonSerializer serializer = new JsonSerializer();
-        List<User> movie2 = (List<User>)serializer.Deserialize(file, typeof(List<User>));
+        List<User> users = (List<User>)serializer.Deserialize(file, typeof(List<User>));
 
-        return movie2;
+        return users;
     }
 }
